@@ -17,7 +17,7 @@
             document.getElementById("user-text").innerText = "You: " + userSpeech;
 
             try {
-                let response = await fetch("https://your-chatbot.onrender.com/chat", { // Update with your actual API URL
+                let response = await fetch("https://voice-to-voice-ai.onrender.com/chat", { // Update with your actual API URL
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: userSpeech })
