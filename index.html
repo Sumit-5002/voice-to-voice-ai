@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Chatbot</title>
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+
+        function startListening() {
+            recognition.start();
+        }
+
+        recognition.onresult = async function (event) {
+            let userSpeech = event.results[0][0].transcript;
+            document.getElementById("user-text").innerText = "You: " + userSpeech;
+
+            let response = await fetch("http://127.0.0.1:5000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userSpeech })
+            });
+
+            let data = await response.json();
+            let botReply = data.response;
+            document.getElementById("bot-text").innerText = "Bot: " + botReply;
+            
+            speakText(botReply);
+        };
+
+        function speakText(text) {
+            let speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            speech.lang = "en-US";
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</head>
+<body>
+    <h2>Voice Chatbot</h2>
+    <button onclick="startListening()">🎤 Start Talking</button>
+    <p id="user-text">You: </p>
+    <p id="bot-text">Bot: </p>
+</body>
+</html>
